@@ -1,0 +1,16 @@
+
+$Header: /cvsroot/jnettop/jnettop/AUTHORS,v 1.5 2006/04/11 15:59:59 merunka Exp $
+
+Authors of jnettop
+
+Jakub Skopal:
+	everything except listed below
+
+
+Marcin Kaminski:
+	IPv6 support in jnettop.c, jresolv.c, jnettop.h
+
+
+Justin Killen:
+	parts of local networks list, UIA display
+

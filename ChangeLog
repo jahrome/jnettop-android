@@ -1,0 +1,159 @@
+2006-05-01	Jakub Skopal <j@kubs.cz>
+ * added support for JNET protocol (used by jnettop-gui)
+ * minor refactorings
+
+2006-04-11	Jakub Skopal <j@kubs.cz>
+ * added support for UIA output (protocol and sources provided by Justin Killen)
+ * added support for conditional compilation of ncurses and uia output
+ * added optional support for logging into syslog
+ * added support for explicit list of local networks (stub implementation
+   by Justin Killen)
+
+2006-03-31	Jakub Skopal <j@kubs.cz>
+ * factored out curses displaying
+ * added text output, formatting
+ * added ieee 802.1q VLAN protocol
+
+2005-07-01	Jakub Skopal <j@kubs.cz>
+
+ * added pause
+ * added sorting
+ * added support for external resolvers
+ * added switch to disable resolving
+   (thanks to Darko K. for patch)
+
+2005-06-30	Jakub Skopal <j@kubs.cz>
+
+ * refactoring into more reusable design
+
+2004-10-04	Jakub Skopal <j@kubs.cz>
+
+ * --disable-multithreaded-resolver option added to configure
+   script. this option is necessary for FreeBSD (and maybe
+   other BSD unices)
+ * fixed more porting issues. solaris, freebsd, openbsd and
+   netbsd should also work now.
+
+2004-10-02	Jakub Skopal <j@kubs.cz>
+
+ * fixed porting issues
+
+2004-09-29	Jakub Skopal <j@kubs.cz>
+
+ * modification of IPv6 support
+ * bugfix of spec file to include manual page
+   (thanks go to Martynas Bieliauskas)
+ * implementation of raw encapsulation (for linux IPv6 tunnel
+   devices)
+
+2004-09-29	Marcin Kaminski <maxiu@man.poznan.pl>
+
+ * added support for packets counting (instead of just bytes)
+
+2004-08-27	Marcin Kaminski	<maxiu@man.poznan.pl>
+
+ * added IPv6 support (changes: structures, hash algorithms,
+   resolving, filters)
+ * display changed (IPv6 addresses are bigger, so now address
+   field width is dynamic)
+
+2003-07-30	Jakub Skopal	<j@kubs.cz>
+
+ * promisc mode parameter added (-p)
+   (thanks to Edmund Roche-Kelly for patch and Andrew Pimlott
+    for suggestion)
+ * added "local_aggregation", "remote_aggregation" and "select_rule"
+   keywords in configuration file
+   (thanks to Arturas Slajus for suggestion)
+ * added --local-aggr, --remote-aggr and -s parameters
+
+2003-04-24	Jakub Skopal	<j@kubs.cz>
+
+ * released version ignored -i argument. corrected.
+   thanks to Miroslav Zajic for pointing out.
+
+2003-04-23	Jakub Skopal	<j@kubs.cz>
+
+ * included man page by Ari Pollak, thanks for help!
+
+2003-04-16	Jakub Skopal	<j@kubs.cz>
+
+ * implemented "interface" keyword in configuration file
+   (thanks go to Ari Pollak for suggestion)
+ * added resolver patch by Andrew Leiserson (many thanks!)
+
+2002-10-17	Jakub Skopal	<j@kubs.cz>
+
+ * implemented -x command line parameter. You are now able to
+   specify custom filter right on the command line. Thanks again
+   go to Martynas Bieliauskas
+ * implemented aggregation
+ * Somewhat cleared the display and made it (hopefully) more
+   readable
+ * implemented rx/tx recognition
+ * I forget to mention Rodrigo Reyes to come up with idea of
+   aggregation.
+
+2002-10-16	Jakub Skopal	<j@kubs.cz>
+
+ * implemented suspend feature, thanks go to Rodrigo Reyes for
+   the idea
+ * removed printf alarm for fragmented packets. Thanks to
+   Ram for notification
+
+2002-10-13	Jakub Skopal	<j@kubs.cz>
+
+ * implemented bpf filters
+ * implemented reading of ~/.jnettop configuration file
+ * added example .jnettop file
+ * the idea of filters came from Martynas Bieliauskas whom I owe
+   many thanks
+
+2002-08-03	Jakub Skopal	<j@kubs.cz>
+
+ * main() now returns 0 when the program was legaly terminated
+ * fixed build for systems which don't have gethostbyaddr_r()
+ * changes in jnettop.c to use select() and avoid 100% processor time
+   consumption on systems, which support it (Linux)
+
+2002-08-31	Jakub Skopal	<j@kubs.cz>
+
+ * modified configure.ac, so that it uses -Wall when compiling with GCC.
+   Thanks again go to David B Harris aka ElectricElf
+ * corrected too-wide terminal bug. Many thanks to David B Harris aka
+   ElectricElf for patience during debugging
+ * implemented bit/bytes per second switch (thanks to Martynas Bieliauskas
+   for idea)
+
+2002-08-29	Jakub Skopal	<j@kubs.cz>
+
+ * implemented content filtering of HTTP and SMTP
+ * added content filtering
+ * removed dependency on inet_ntop
+ * fixed Solaris 7 build
+
+2002-08-28	Jakub Skopal	<j@kubs.cz>
+
+ * fixed Solaris build
+ * dropped dependency on uint64 in favour of broader portability
+ * fixed FreeBSD build
+ * fixed Debian build
+
+2002-08-27	Jakub Skopal	<j@kubs.cz>
+
+ * modified README so that it explains libpcap dependency
+ * extracted classification routines from jnettop.c to jresolv.c
+ * minor modifications to autoconf, so that it fails if no suitable glib2
+   is found
+ * implemented DLT_LINUX_SLL encapsulation, so listening on "any" interface
+   under Linux now produces classified packets.
+ * added "-i"/"--interface" parameter for user to choose which interface
+   should be opened for listening
+ * added "-d"/"--debug" parameter for DUMPing debug messages
+ * added separate in/out accounting
+
+2002-08-11	Jakub Skopal	<j@kubs.cz>
+
+ * initial release
+
+$Header: /cvsroot/jnettop/jnettop/ChangeLog,v 1.29 2006/04/11 15:21:05 merunka Exp $

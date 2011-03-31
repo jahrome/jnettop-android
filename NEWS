@@ -1,0 +1,52 @@
+2006-04-11:	Added support for UIA output
+		Added support for conditional compilation of NCURSES and UIA
+		Added optional support for syslog
+		Aded support for explicit list of local networks
+
+2006-03-31:	Added text output
+		Added support for IEEE 8021.g VLAN
+
+2005-07-01:	Added pause
+		Added sorting
+		Added external resolvers
+		Added -n command line parameter (disable resolving)
+
+2005-06-30:	Refactoring to more reusable design
+
+2004-10-04:	Added --disable-multithreaded-resolver option for FreeBSD
+		Fixed more porting issues.
+
+2004-10-02:	Fixed porting issues to freebsd and solaris
+
+2004-09-28:	Added packet counting instead of just bytes counting
+		Added support for raw encapsulation present on linux IPv6 tunnel devices
+
+2004-08-27:	Added IPv6 support
+		Address field width is now dynamic
+
+2003-07-30:	Added "-p" command line parameter (promiscuous mode)
+		Added "local_aggregation", "remote_aggregation" and "select_rule" keywords to config file (see README)
+		Added "--local-aggr", "--remote-aggr" and "-s" command line parameters
+
+2003-04-23:	Added man page
+
+2003-04-16:	Added "interface" keyword
+		
+2002-10-16:	Added suspend feature
+
+2002-10-13:	Added -f command line parameter
+		Added support for BPF filters to filter packets prior to processing them
+
+2002-08-31:	I added -b switch for bits/bytes per second
+
+2002-08-28:	Package is now compilable under FreeBSD, Solaris, Debian and on
+		various CPUs. See PORTING file.
+
+2002-08-27:	Added -i command line parameter
+		Added -d command line parameter
+		jnettop now correctly interprets traffic on linux "any" interface
+		separate in/out accounting
+
+2002-08-22:	The package is entirely new.
+
+$Header: /cvsroot/jnettop/jnettop/NEWS,v 1.16 2006/04/11 15:21:05 merunka Exp $

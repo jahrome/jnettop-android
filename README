@@ -1,0 +1,237 @@
+This is jnettop 0.13.0.
+It's a package, which should do simmilar job for network as top does for
+processes.
+
+-- Introduction --
+
+After administering various networks I decided to write this piece of code,
+becouse I didn't find anything that was simmilar or suitable for my purpose.
+I often needed to watch traffic on the outbound router by the times our line
+was getting red and see, what's going on there and whether is it right.
+I hope, somebody out there will find this tool usefull too.
+Just in case you wanted to write me any comments, hints, postcards, herritage
+announcements, love, wish, abuse etc., feel free to use my email, j@kubs.cz,
+please include "jnettop" in the subject of your mail(!!).
+
+-- Installation --
+
+Download the sources (http://jnettop.kubs.info), unpack and decide, whether
+you want:
+
+  support for NCURSES display (default is yes)
+  support for logging into SYSLOG (default is yes)
+  support for UIA protocol (default is no) (see README.UIA for more info)
+
+if you don't want the default behaviour for any of the above options, specify
+
+  --without-ncurses, --without-syslog, --enable-uia
+
+respectivelly to configure script. Make as usual.
+
+-- FreeBSD Notes --
+
+Is jnettop crashing under your FreeBSD? Try passing
+--disable-multithreaded-resolver to configure script and recompile.
+
+-- Aggregation --
+
+  (What is it?)
+
+Aggregation is a way, how to modify packet classicication rules. There are
+two types of aggregation in jnettop: host and port. If there is port
+aggregation enabled, it means, that all packets seem to come(go to) same port
+numbers. If there is host aggregation enabled, it means, that all packets
+seem to come(go to) same host. Let's have an example:
+Suppose we have following configuration:
+
+                                                             +--- host0
+  internet ----- addr1 (eth0) --- router --- addr2 (eth1) ---+--- host1
+                                                             +--- host2
+
+i.e. typical border router with eth0 interface looking into internet and
+eth1 interface looking to intranet. Suppose we're running jnettop on router
+sniffing on interface eth0. To see how many bytes every host consumes out
+of the internet connection, we enable remote host aggregation and local port
+aggregation. i.e. All internet will behave as one endpoint and all programs
+on one host will, too, behave as one endpoint. This way, every stream we see
+in jnettop will be from one of the hosts in intranet to a public internet.
+Aggregation is very powerfull laser-knife in network traffic analysis.
+I understand, that it is not very user friendly implementation in jnettop and
+I will gratefully welcome every suggestion on how to make this topic clear and
+more clear-to-use.
+
+-- .jnettop configuration file --
+
+  (How can I configure packet filters that apply prior to processing
+   packets)
+
+Since version 0.6, jnettop package scans your home directory for a file named
+".jnettop" and reads possible packet filters. Syntax of the configuration
+file is (at least I hope) obvious out of the example provided in .jnettop file
+included in distribution. The file consists of lines beginning with keywords.
+Each keyword can have various parameters. Following keywords were implemented
+so far:
+
+  variable	"<name>"	"<value>"
+
+    this keyword introduces new string variable of name <name>. This variable
+    is assigned value of <value>. Variables can be used in rule specifications
+    to shorten them and make them more readable.
+    ex.
+
+      variable	"intranet"	"net 192.168.0.0/16"
+
+  rule		"<name>"	"<packet filter specification>"
+
+    this keyword defines new packet filter rule of name <name>. Packet filter
+    syntax conforms to that of libpcap library or tcpdump program. Explanation
+    of the syntax can be found in manual page of tcpdump package. Specification
+    undergoes variable substitution. Each string of the form "${identifier}" is
+    expanded to the value of the variable named "identifier". The variable
+    must be defined PRIOR to the definition of the rule in the configuration
+    file. Given the previous example of variable keyword, you can use:
+
+      rule	"source is intranet"	"src ${intranet}"
+
+After you start jnettop, you can use the "f" key to select active filter used
+PRIOR to any packet processing. This filter is applied BEFORE any statistics
+are computed, so even the total BPS is computed only out of the packets, that
+pass the filter(!!).
+
+Since version 0.8, jnettop supports "interface" keyword, which specifies
+which interface to listen after you start it up. Example:
+
+  interface	"eth0"
+
+Since version 0.9, jnettop supports following new keywors:
+
+  local_aggregation	[none|host|port]
+
+    this keyword sets startup local aggregation value
+    ex.
+
+      local_aggregation  port
+
+  remote_aggregation	[none|host|port]
+
+    this keyword sets startup remote aggregation value
+    ex.
+
+      remote_aggregation host
+
+  select_rule	"<name>"
+
+    this keywors sets rule, that is enabled on startup
+    name is the name of previously(!) defined rule (by "rule" keyword)
+    ex.
+
+      select_rule "source is intranet"
+
+Since version 0.11, jnettop supports multiple resolvers. This can be configured
+thru "resolve" keyword in configuration file:
+
+  resolve_rule "<network ip>" "<network mask>" [normal|external] ("<extscript>")
+
+    this keyword configures resolver, so that it uses the appropriate method
+    of resolving for specified network. If this method fails, next one matching
+    is used.
+    ex.
+
+      resolve_rule "192.168.1.0" "255.255.255.0" normal
+      resolve_rule "192.168.1.0" "255.255.255.0" external "jnettop-lookup-nmb"
+
+    this will cause jnettop to use normal DNS lookup for all 192.168.1.0/24 address-
+    es first. If nothing is found, than external program "jnettop-lookup-smb"
+    is used.
+    if end of all rules is reached, normal DNS lookup is used.
+
+  resolve [on|off]
+
+    enables/disables resolving completelly
+
+Since version 0.12, jnettop supports explicit list of local networks. Local
+networks then appear on the left side of display:
+
+  local_network "<network ip>" "<network mask>"
+
+    this keyword configures packet classifier, so that hosts matching this
+    classification will be considered local.
+
+The pathname of configuraton file can be overrided by specifying -f command
+line parameter.
+
+-- libpcap dependency explanation --
+
+  (Why cannot I switch interfaces while running jnettop. I've seen this
+   feature on a screenshot)
+
+There are various libpcap versions out there with different capabilities.
+Notably there are 0.6.2 and older, which don't support interface discovery.
+With these versions of libpcap, you won't be able to switch between interfaces
+while running jnettop. Anyway, you can use "-i" parameter to specify which
+interface to listen on (since jnettop 0.2).
+With libpcap version 0.7 and younger, you will be able to switch between
+various interfaces while running jnettop.
+
+If you want to get newer version of libpcap, go to http://www.tcpdump.org to
+get sources or you can find newer versions in RPMs on http://rpmfind.net
+
+-- glib2 dependency --
+
+  (Won't there be port for glib < 2 versions?)
+
+No. This package is heavily dependant on thread functions contained in glib2.
+I believe, that there are (will be) various platforms for which glib2 is ported
+and thus prefer to depend on generic threading capabilities of glib2 to meet
+less portability problems later.
+Glib2 is now available in RPMs for RedHat (and simmilar), DEBs for Debian and
+.tar.gz for the others.
+
+-- UNKNOWN traffic --
+
+  (Jnettop displays a lot of UNKNOWN traffic and UNK. protocol)
+
+Jnettop was done as basic analysis tool and does not interpret most of the
+protocols on Internet. Namely it can only interpret TCP/UDP/IP (v4 as well as
+v6 since 0.10) on EtherNet or Linux "any" device. This is sufficient for vast
+majority of linux users (=me .-)). In case you want me to add support for
+another encapsulation (802.11, etc...), please send me output of jnettop -d
+and a piece of tcpdump dumpfile with examples of packets. I'll do my best :)
+In case you want me to add support for another higher-level protocol
+(IPX, AppleTalk,...), please, send me a vote for that protocol.
+
+-- PORTABILITY --
+
+  (Does Jnettop work under system X on computer Y)
+
+For portability description, please, see PORTING file. There is an up-to-date
+status of portability issues. Generally, I'd like jnettop to be working on
+any system, which has glib2, pcap and ncurses ports.
+
+-- content filtering --
+
+  (What the hell is that?)
+
+Jnettop attempts to "understand" what communication is in the TCP/UDP data and
+displays this information along the stream. For example it can recover URL from
+a HTTP request or addresses of ongoing SMTP session. Content filtering is
+enabled by default and can be disabled while running. There can be performance
+problems on a very busy server which would cause various packets to be dropped.
+
+-- 100% CPU usage --
+
+  (Why does jnettop consume all CPU time?)
+
+Libpcap's features don't include reading a packet with timeout. On some systems
+this can be overcomed by using select() call. On others, we loop between non-
+blocking read and thread_yeald() function (notably BSD). On these systems (BSD)
+jnettop consumes all available CPU time, but should behave nicely, so that
+it consumes all time up to 100%. Other processes should have theire appropriate
+time. This behaviour does not include Linux
+
+Copyright (C) 2002, 2003, 2004, 2005, 2006 Jakub Skopal
+Portions of the package are taken from the tcpdump project and their rights are
+held by their respective owners stated in the beginning of the files.
+
+$Header: /cvsroot/jnettop/jnettop/README,v 1.20 2006/04/11 15:21:05 merunka Exp $
+
