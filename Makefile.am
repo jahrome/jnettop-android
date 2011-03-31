@@ -1,7 +1,7 @@
 # $Header: /cvsroot/jnettop/jnettop/Makefile.am,v 1.14 2006/04/11 15:59:59 merunka Exp $
 
-INCLUDES = -I$(top_srcdir)/include @GLIB_CFLAGS@
-AM_LDFLAGS = @GLIB_LIBS@ @NSL_LIBS@ @SOCKET_LIBS@
+INCLUDES = -I$(top_srcdir)/include
+AM_LDFLAGS = -lglib-2.0 -lgthread-2.0 @NSL_LIBS@ @SOCKET_LIBS@
 CFLAGS = -g -O0
 
 man_MANS = jnettop.8

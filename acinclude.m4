@@ -139,34 +139,6 @@ AC_DEFUN(AC_NETTOP_PCAP_CHECK,
 	  $SOCKET_LIBS $NSL_LIBS)
 ])
 
-dnl ************************************************************
-dnl check for "localhost", if it doesn't exist, we can't do the
-dnl gethostbyname_r tests!
-dnl 
-dnl Copied from cURL package ;
-dnl Done by Jakub Skopal <j@kubs.cz> on 2002-08-28.
-dnl
-
-AC_DEFUN(AC_NETTOP_CHECK_WORKING_RESOLVER,[
-AC_MSG_CHECKING([if "localhost" resolves])
-AC_TRY_RUN([
-#include <string.h>
-#include <sys/types.h>
-#include <netdb.h>
-
-int
-main () {
-struct hostent *h;
-h = gethostbyname("localhost");
-exit (h == NULL ? 1 : 0); }],[
-      AC_MSG_RESULT(yes)],[
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([can't figure out gethostbyname_r() since localhost doesn't resolve])
-
-      ]
-)
-])
-
 dnl
 dnl Try to discover struct in6_addr members
 dnl

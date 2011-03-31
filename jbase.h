@@ -72,7 +72,9 @@
 #include <time.h>
 #include <netdb.h>
 #include <sys/ioctl.h>
+#ifndef ANDROID
 #include <netinet/ip6.h>
+#endif // ANDROID
 #include <ctype.h>
 #if WITH_SYSLOG
 # if HAVE_SYSLOG_H

@@ -22,7 +22,9 @@
 
 #include "jbase.h"
 #include "jconfig.h"
+#ifndef ANDROID
 #include <netinet/ip6.h>
+#endif // ANDROID
 
 static gboolean resolveStreamTCP(const gchar *data, guint len, jbase_stream *stream, jbase_payload_info *payloads) {
 	guint	hlen;
@@ -146,7 +148,7 @@ static gboolean resolveStreamICMP6(const gchar  *data, guint len, jbase_stream *
 	stream->srcport = stream->dstport = icmp->icmp6_type;
 	return TRUE;
 }
-
+#ifndef ANDROID
 static gboolean resolveStreamIP6(const gchar  *data, guint len, jbase_stream *stream, jbase_payload_info *payloads) {
 	const struct ip6_hdr	*ip = (const struct ip6_hdr *)data;
 	if (len < sizeof(struct ip6_hdr)) {
@@ -173,7 +175,7 @@ static gboolean resolveStreamIP6(const gchar  *data, guint len, jbase_stream *st
 	}
 	return TRUE;
 }
-
+#endif // ANDROID
 static gboolean resolveStreamARP(const gchar  *data, guint len, jbase_stream *stream, jbase_payload_info *payloads) {
 	stream->proto = JBASE_PROTO_ARP;
 	return TRUE;
@@ -187,8 +189,10 @@ static gboolean resolveStreamIPn(const jbase_packet *packet, const gchar  *data,
 	switch (IP_V(ip)) {
 		case 4:
 			return resolveStreamIP(data, len, stream, payloads);
+#ifndef ANDROID
 		case 6:
 			return resolveStreamIP6(data, len, stream, payloads);
+#endif // ANDROID
 	}
 	return FALSE;
 }
@@ -216,9 +220,11 @@ static gboolean resolveStreamByEtherType(const gchar *data, guint len, jbase_str
 	case ETHERTYPE_ARP:
 		return resolveStreamARP(data, len, stream, payloads);
 		break;
+#ifndef ANDROID
 	case ETHERTYPE_IPV6:
 		return resolveStreamIP6(data, len, stream, payloads);
 		break;
+#endif // ANDROID
 	case NTOP_ETHERTYPE_802_1Q:
 		return resolveStream8021Q(data, len, stream, payloads);
 		break;
